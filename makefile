@@ -1,2 +1,2 @@
 run:
-	python3 flaskr/app.py
+	python3 app.py
