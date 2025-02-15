@@ -2,33 +2,47 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
-// Create renderer
-const renderer = new THREE.WebGLRenderer({ antialias: true });
+const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true});
 renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setClearColor(0x000000, 0);
+
 document.body.appendChild(renderer.domElement);
 
-// Create scene
 const scene = new THREE.Scene();
 
-// Create camera
-const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+const camera = new THREE.PerspectiveCamera(
+  45,
+  window.innerWidth / window.innerHeight,
+  0.1,
+  1000
+);
 camera.position.set(0, 1, 3);
 
-// Set up OrbitControls
 const controls = new OrbitControls(camera, renderer.domElement);
+controls.enablePan = false;  // Disable panning so the orbit target stays fixed
+controls.enableZoom = true;  // Allow zooming
+// Set an initial target; we'll update this after the model loads.
+controls.target.set(0, 0, 0);
+controls.update();
 
-// Add a simple ambient light
 scene.add(new THREE.AmbientLight(0xffffff));
 
-// Load the arm model
 const loader = new GLTFLoader();
 loader.load(
-  'static/arm2/scene.gltf', // Adjust the path if needed
+  'static/arm2/scene.gltf',
   (gltf) => {
     const model = gltf.scene;
     model.scale.set(0.005, 0.005, 0.005);
-    model.position.set(0, 0, 0); // Center the model
+    // Center the model at the origin.
+    model.position.set(0, 0, 0);
     scene.add(model);
+
+    // Compute the model's bounding box center and update OrbitControls target.
+    const box = new THREE.Box3().setFromObject(model);
+    const center = new THREE.Vector3();
+    box.getCenter(center);
+    controls.target.copy(center);
+    controls.update();
   },
   undefined,
   (error) => {
@@ -36,14 +50,12 @@ loader.load(
   }
 );
 
-// Handle window resizing
 window.addEventListener('resize', () => {
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(window.innerWidth, window.innerHeight);
 });
 
-// Animation loop
 function animate() {
   requestAnimationFrame(animate);
   controls.update();
