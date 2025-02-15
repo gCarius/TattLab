@@ -1,6 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <style>
+      head {
+        font-family: "Pirata One", serif;
+      }
+    </style>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link
@@ -14,16 +19,38 @@
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
   </head>
-  <body>
+  <body class="bg-radial-gradient">
+    <style>
+      body {
+        font-family: "Pirata One", serif;
+      }
+      .fs-custom {
+        font-size: 70px;
+      }
+      .bg-radial-gradient {
+        background: radial-gradient(circle, #a9a9a9, #ffffff);
+      }
+    </style>
+    
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Pirata+One&display=swap"
+      rel="stylesheet"
+    />
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
       integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
       crossorigin="anonymous"
     ></script>
-    
+
+    <nav class="navbar navbar-disabled-color">
+      <div class="container-fluid">
+        <a class="navbar-brand fs-custom" href="#"> TattLab </a>
+      </div>
+    </nav>
+
     <div>{% block content %} {% endblock %}</div>
-    <input type="file" id="upload" accept="image/*" />
-    <div id="canvas-container" style="width: 100vw; height: 100vh"></div>
-    <script src="{{ url_for('static', filename='script.js') }}"></script>
   </body>
 </html>

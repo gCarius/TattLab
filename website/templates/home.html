@@ -1,3 +1,10 @@
-{% extends "index.html" %} {% block title%}3D Arm Tattoo{% endblock %} {% block content %}
-<h1>TattLab</h1>
+{% extends "index.html" %} {% block title%}3D Arm Tattoo{% endblock %} {% block
+content %}
+<div>
+    
+</div>
+
+<input type="file" id="upload" accept="image/*" />
+<div id="canvas-container" style="width: 100vw; height: 100vh"></div>
+<script src="{{ url_for('static', filename='script.js') }}"></script>
 {% endblock %}
