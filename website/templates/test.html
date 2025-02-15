@@ -1,3 +1,19 @@
-{% extends "index.html" %} {% block title%}3D Arm Tattoo{% endblock %} {% block content %}
-<h1>TattLab - Developing</h1>
-{% endblock %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Test Arm</title>
+    <script async src="https://unpkg.com/es-module-shims@1.6.3/dist/es-module-shims.js"></script>
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://unpkg.com/three@v0.163.0/build/three.module.js",
+          "three/addons/": "https://unpkg.com/three@v0.163.0/examples/jsm/"
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <script type="module" src="{{ url_for('static', filename='script.js') }}"></script>
+  </body>
+</html>
