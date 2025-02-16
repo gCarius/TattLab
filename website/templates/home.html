@@ -21,47 +21,196 @@ content %}
     src="{{ url_for('static', filename='script.js') }}"
   ></script>
 </div>
+<!-- File Upload Button -->
+<style>
+  .upload-btn {
+    width: 75px;
+    height: 75px;
+    background: transparent;
+    position: fixed;
+    bottom: 50px;
+    left: 50px;
+    display: flex;
+  }
+  .plus-icon {
+    font-family: "Pirata One", serif;
+    font-size: 100px;
+    color: black;
+    margin-bottom: 10px;
+  }
+  .custom-modal-dialog {
+    height: 700px;
+    display: flex;
+    align-items: center;
+  }
+
+  .custom-modal-height {
+    height: 600px;
+  }
+
+  /* Style for the preview box */
+  .preview-container {
+    width: 100%;
+    height: 300px; /* Ensures the container stays visible */
+    border: 2px dashed #ccc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    position: relative;
+    background: #f8f9fa;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  /* Image should fill the preview space properly */
+  #image-preview {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    display: block; /* Ensure it takes up space when visible */
+  }
+
+  /* Placeholder text */
+  .preview-placeholder {
+    position: absolute;
+    font-size: 18px;
+    color: #666;
+  }
+
+  /* Hide placeholder when an image is displayed */
+  .preview-container img:not([src=""]) + .preview-placeholder {
+    display: none;
+  }
+</style>
+
 <div class="fixed-bottom m-5">
-  <style>
-    .upload-btn {
-      width: 75px;
-      height: 75px;
-      background: transparent;
-      position: fixed;
-      bottom: 50px;
-      left: 50px;
-      display: flex;
-    }
-    .plus-icon {
-      font-family: "Pirata One", serif;
-      font-size: 100px;
-      color: black;
-      margin-bottom: 10px;
-    }
-  </style>
-  <input type="file" id="upload" accept="image/*" class="d-none" />
   <button
-    class="btn rounded-circle upload-btn border border-black border-5 justify-content-center align-items-center"
-    onclick="document.getElementById('upload').click();">
+    class="btn rounded-circle upload-btn border border-black border-5 d-flex justify-content-center align-items-center"
+    data-bs-toggle="modal"
+    data-bs-target="#uploadModal"
+  >
     <span class="plus-icon">+</span>
   </button>
+</div>
+
+<div
+  class="modal fade"
+  id="uploadModal"
+  tabindex="-1"
+  aria-labelledby="uploadModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog custom-modal-dialog">
+    <div class="modal-content custom-modal-height">
+      <div class="modal-header">
+        <h5 class="modal-title" id="uploadModalLabel">Upload an Image</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+
+      <div class="modal-body text-center">
+        <input
+          type="file"
+          id="upload"
+          accept="image/*"
+          class="form-control mt-2"
+          onchange="previewImage(event)"
+        />
+        <div class="preview-container mt-3">
+          <img id="image-preview" src="" />
+          <span class="preview-placeholder">No image selected</span>
+        </div>
+        <div class="d-flex justify-content-center m-3">
+          <button type="button" class="btn btn-secondary">
+            Remove Background
+          </button>
+        </div>
+
+        <div class="modal-footer d-flex justify-content-between">
+          <button
+            type="button"
+            class="btn btn-secondary ms-3"
+            data-bs-dismiss="modal"
+          >
+            Close
+          </button>
+
+          <button
+            type="button"
+            class="btn btn-secondary me-3"
+            id = "save-btn"
+          >
+            Save
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script>
-    document.getElementById("upload").addEventListener("change", function(event) {
-      let file = event.target.files[0];
+    function previewImage(event) {
+      const input = event.target;
+      const preview = document.getElementById("image-preview");
+
+      if (input.files && input.files[0]) {
+        const reader = new FileReader();
+
+        reader.onload = function (e) {
+          preview.src = e.target.result;
+        };
+
+        reader.readAsDataURL(input.files[0]);
+      } else {
+        preview.src = ""; // Reset preview if no file is selected onclick="document.getElementById('upload').click();"
+      }
+    }
+    function uploadImage() {
+      let fileInput = document.getElementById("upload");
+      let file = fileInput.files[0];
+
       if (file) {
         let formData = new FormData();
         formData.append("image", file);
-  
+
         fetch("/upload", {
           method: "POST",
-          body: formData
+          body: formData,
         })
-        .then(response => response.json())
-        .then(data => alert(data.message))
-        .catch(error => console.error("Error:", error));
+          .then((response) => response.json())
+          .then((data) => alert(data.message))
+          .catch((error) => console.error("Error:", error));
+      } else {
+        alert("No file selected!");
       }
-    });
+    }
   </script>
+
+  <script>
+      document
+        .getElementById("save-btn")
+        .addEventListener("change", function (event) {
+          let file = event.target.files[0];
+          if (file) {
+            let formData = new FormData();
+            formData.append("image", file);
+
+            fetch("/upload", {
+              method: "POST",
+              body: formData,
+            })
+              .then((response) => response.json())
+              .then((data) => alert(data.message))
+              .catch((error) => console.error("Error:", error));
+          }
+        });
+
+  </script>
+
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+  {% endblock %}
 </div>
-<script src="{{ url_for('static', filename='script.js') }}"></script>
-{% endblock %}
