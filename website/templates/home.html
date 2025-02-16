@@ -42,10 +42,26 @@ content %}
   <input type="file" id="upload" accept="image/*" class="d-none" />
   <button
     class="btn rounded-circle upload-btn border border-black border-5 justify-content-center align-items-center"
-    onclick="document.getElementById('upload').click();"
-  >
+    onclick="document.getElementById('upload').click();">
     <span class="plus-icon">+</span>
   </button>
+  <script>
+    document.getElementById("upload").addEventListener("change", function(event) {
+      let file = event.target.files[0];
+      if (file) {
+        let formData = new FormData();
+        formData.append("image", file);
+  
+        fetch("/upload", {
+          method: "POST",
+          body: formData
+        })
+        .then(response => response.json())
+        .then(data => alert(data.message))
+        .catch(error => console.error("Error:", error));
+      }
+    });
+  </script>
 </div>
 <script src="{{ url_for('static', filename='script.js') }}"></script>
 {% endblock %}
