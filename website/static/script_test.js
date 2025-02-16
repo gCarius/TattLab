@@ -24,7 +24,34 @@ controls.enableZoom = true;
 controls.target.set(0, 0, 0);
 controls.update();
 
-// ----- Lighting -----
+// Top Light (shines downward)
+const topLight = new THREE.DirectionalLight(0xffffff, 1);
+topLight.position.set(0, 10, 0);
+topLight.target.position.set(0, 0, 0);
+scene.add(topLight);
+scene.add(topLight.target);
+
+// Bottom Light (shines upward)
+const bottomLight = new THREE.DirectionalLight(0xffffff, 1);
+bottomLight.position.set(0, -10, 0);
+bottomLight.target.position.set(0, 0, 0);
+scene.add(bottomLight);
+scene.add(bottomLight.target);
+
+// Front Light (shines from front to back)
+const frontLight = new THREE.DirectionalLight(0xffffff, 1);
+frontLight.position.set(0, 0, 10);
+frontLight.target.position.set(0, 0, 0);
+scene.add(frontLight);
+scene.add(frontLight.target);
+
+// Back Light (shines from back to front)
+const backLight = new THREE.DirectionalLight(0xffffff, 1);
+backLight.position.set(0, 0, -10);
+backLight.target.position.set(0, 0, 0);
+scene.add(backLight);
+scene.add(backLight.target);
+
 scene.add(new THREE.AmbientLight(0xffffff));
 
 // ----- Canvas Texture Setup -----
@@ -61,8 +88,13 @@ loader.load(
       if (child.isMesh) {
         child.material = new THREE.MeshPhongMaterial({
           map: canvasTexture,
-          transparent: true
+          transparent: true,
+          color: 0xffcba3 // No quotes around the hex value
         });
+        
+        child.castShadow = true;
+        child.receiveShadow = true;
+
       }
     });
 
