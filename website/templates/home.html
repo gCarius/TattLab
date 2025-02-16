@@ -32,6 +32,38 @@ content %}
     left: 50px;
     display: flex;
   }
+  .button-container {
+  position: relative; /* So the label can be absolutely positioned relative to this container */
+  text-align: center;
+  }
+
+  /* Button hover effect */
+  .btn-effect {
+    transition: transform 0.3s ease;
+  }
+
+  .btn-effect:hover {
+    transform: scale(1.1);
+  }
+
+  /* Hide label by default */
+  .btn-label {
+    position: absolute;
+    bottom: -30px; /* Adjust this value to control how far below the button the label appears */
+    left: 0;
+    right: 0;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    font-size: 14px;
+    color: black;
+  }
+
+  /* Show label when hovering over the container */
+  .button-container:hover .btn-label {
+    opacity: 1;
+  }
+
+
   .plus-icon {
     font-family: "Pirata One", serif;
     font-size: 100px;
@@ -84,25 +116,29 @@ content %}
   }
 </style>
 
-<div class="fixed-bottom m-5">
+<div class="position-fixed button-container" style="bottom:50px; left:50px;">
   <button
-    class="btn rounded-circle upload-btn border border-black border-5 d-flex justify-content-center align-items-center"
+    type="button"
+    class="btn rounded-circle border border-black border-5 d-flex justify-content-center align-items-center btn-effect"
+    style="width:75px; height:75px; background: transparent;"
     data-bs-toggle="modal"
     data-bs-target="#uploadModal"
   >
     <span class="plus-icon">+</span>
   </button>
+  <div class="btn-label">Upload</div>
 </div>
 
-<div class="position-fixed" style="bottom:50px; right:50px;">
+<div class="position-fixed button-container" style="bottom:50px; right:50px;">
   <button
     type="button"
     id="reset-btn"
-    class="btn rounded-circle border border-black border-5 d-flex justify-content-center align-items-center"
+    class="btn rounded-circle border border-black border-5 d-flex justify-content-center align-items-center btn-effect"
     style="width:75px; height:75px; background: transparent;"
   >
     <i class="bi bi-eraser" style="font-size:40px; color:black;"></i>
   </button>
+  <div class="btn-label">Reset</div>
 </div>
 
 <div
