@@ -178,6 +178,7 @@ document.getElementById("save-btn").addEventListener("click", function () {
   }
   setTimeout(() => {
     placingTattoo = true;
+    document.body.style.cursor = "crosshair"; 
     console.log('Tattoo placement enabled. Double click on the model to place the tattoo.');
   }, 500);
 });
@@ -203,6 +204,8 @@ document.addEventListener('dblclick', (event) => {
     }
     // Disable placement mode after one tattoo is placed.
     placingTattoo = false;
+    document.body.style.cursor = "default"; 
+
   }
 });
 
