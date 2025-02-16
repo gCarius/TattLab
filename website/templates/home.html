@@ -140,11 +140,7 @@ content %}
             Close
           </button>
 
-          <button
-            type="button"
-            class="btn btn-secondary me-3"
-            id = "save-btn"
-          >
+          <button type="button" class="btn btn-secondary me-3" id="save-btn">
             Save
           </button>
         </div>
@@ -166,7 +162,7 @@ content %}
 
         reader.readAsDataURL(input.files[0]);
       } else {
-        preview.src = ""; // Reset preview if no file is selected onclick="document.getElementById('upload').click();"
+        preview.src = "";
       }
     }
     function uploadImage() {
@@ -191,24 +187,24 @@ content %}
   </script>
 
   <script>
-      document
-        .getElementById("save-btn")
-        .addEventListener("change", function (event) {
-          let file = event.target.files[0];
-          if (file) {
-            let formData = new FormData();
-            formData.append("image", file);
+    document.getElementById("save-btn").addEventListener("click", function () {
+      let fileInput = document.getElementById("upload");
+      let file = fileInput.files[0];
+      if (file) {
+        let formData = new FormData();
+        formData.append("image", file);
 
-            fetch("/upload", {
-              method: "POST",
-              body: formData,
-            })
-              .then((response) => response.json())
-              .then((data) => alert(data.message))
-              .catch((error) => console.error("Error:", error));
-          }
-        });
-
+        fetch("/upload", {
+          method: "POST",
+          body: formData,
+        })
+          .then((response) => response.json())
+          .then((data) => alert(data.message))
+          .catch((error) => console.error("Error:", error));
+      } else {
+        alert("No file selected!");
+      }
+    });
   </script>
 
   <script src="{{ url_for('static', filename='script.js') }}"></script>
