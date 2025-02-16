@@ -71,6 +71,7 @@ canvasTexture.needsUpdate = true;
 let armModel = null;
 let uploadedTattooImage = null; // The image uploaded by the user to be used as tattoo.
 let placingTattoo = false;      // Flag for placement mode
+let sizeValue = 1;
 
 // ----- Load the Arm Model -----
 // (Using the GLB from the UV tattoo processing version)
@@ -129,8 +130,8 @@ function shoot(uv) {
   }
   
   // Determine tattoo size in pixels.
-  const tattooWidth = 100;
-  const tattooHeight = 100;
+  const tattooWidth = 100 * sizeValue;
+  const tattooHeight = 100 * sizeValue;
   
   // Draw the tattoo image centered at (x, y)
   baseCtx.drawImage(
@@ -204,6 +205,12 @@ document.addEventListener('dblclick', (event) => {
     placingTattoo = false;
   }
 });
+
+document.getElementById("save-btn").addEventListener("click", function () {
+  sizeValue = document.getElementById("size").value;
+  console.log("Selected size:", sizeValue);
+});
+
 
 // ----- Handle Window Resize -----
 window.addEventListener('resize', () => {
