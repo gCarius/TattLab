@@ -229,3 +229,16 @@ function animate() {
   renderer.render(scene, camera);
 }
 animate();
+
+document.getElementById("reset-btn").addEventListener("click", function() {
+  // Clear the canvas
+  baseCtx.clearRect(0, 0, baseCanvas.width, baseCanvas.height);
+  // Fill it with a white background (or whatever the default is)
+  baseCtx.fillStyle = "#ffffff";
+  baseCtx.fillRect(0, 0, baseCanvas.width, baseCanvas.height);
+  
+  // Notify the texture that it needs updating
+  canvasTexture.needsUpdate = true;
+  
+  console.log("Canvas reset!");
+});
