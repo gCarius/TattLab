@@ -30,28 +30,24 @@ controls.addEventListener('start', () => {
 });
 
 // ----- Lights -----
-// Top Light (shines downward)
 const topLight = new THREE.DirectionalLight(0xffffff, 1);
 topLight.position.set(0, 10, 0);
 topLight.target.position.set(0, 0, 0);
 scene.add(topLight);
 scene.add(topLight.target);
 
-// Bottom Light (shines upward)
 const bottomLight = new THREE.DirectionalLight(0xffffff, 1);
 bottomLight.position.set(0, -10, 0);
 bottomLight.target.position.set(0, 0, 0);
 scene.add(bottomLight);
 scene.add(bottomLight.target);
 
-// Front Light (shines from front to back)
 const frontLight = new THREE.DirectionalLight(0xffffff, 1);
 frontLight.position.set(0, 0, 10);
 frontLight.target.position.set(0, 0, 0);
 scene.add(frontLight);
 scene.add(frontLight.target);
 
-// Back Light (shines from back to front)
 const backLight = new THREE.DirectionalLight(0xffffff, 1);
 backLight.position.set(0, 0, -10);
 backLight.target.position.set(0, 0, 0);
@@ -61,12 +57,10 @@ scene.add(backLight.target);
 scene.add(new THREE.AmbientLight(0xffffff));
 
 // ----- Canvas Texture Setup -----
-// Create a canvas that will serve as the texture for the arm model.
 let baseCanvas = document.createElement('canvas');
 baseCanvas.width = 1024;
 baseCanvas.height = 1024;
 let baseCtx = baseCanvas.getContext('2d');
-// Fill with a base color (white, for example)
 baseCtx.fillStyle = '#ffffff';
 baseCtx.fillRect(0, 0, baseCanvas.width, baseCanvas.height);
 
@@ -136,19 +130,14 @@ const mouse = new THREE.Vector2();
 
 // ----- Tattoo Painting Function -----
 function shoot(uv) {
-  // Convert UV (0 to 1) to canvas pixel coordinates.
   const x = uv.x * baseCanvas.width;
-  const y = (1 - uv.y) * baseCanvas.height; // Flip Y because canvas origin is top-left
-
+  const y = (1 - uv.y) * baseCanvas.height;
   if (!uploadedTattooImage) {
     console.error('No tattoo image available.');
     return;
   }
-  
   const tattooWidth = 100 * sizeValue;
   const tattooHeight = 100 * sizeValue;
-  
-  // Draw the tattoo image centered at (x, y)
   baseCtx.drawImage(
     uploadedTattooImage,
     x - tattooWidth / 2,
@@ -156,7 +145,6 @@ function shoot(uv) {
     tattooWidth,
     tattooHeight
   );
-  
   canvasTexture.needsUpdate = true;
   console.log('Tattoo painted at UV:', uv);
 }
@@ -220,9 +208,11 @@ document.getElementById("save-btn").addEventListener("click", function () {
   console.log("Selected size:", sizeValue);
 });
 
-// ----- Stop auto-rotation on user interaction via OrbitControls -----
-controls.addEventListener('start', () => {
-  autoRotate = false;
+// ----- Spin Button: Toggle Auto-Rotation -----
+// When the spin button is clicked, simply toggle autoRotate.
+document.getElementById("rotate-btn").addEventListener("click", () => {
+  if (!armPivot) return;
+  autoRotate = !autoRotate;
 });
 
 // ----- Handle Window Resize -----
@@ -233,7 +223,6 @@ window.addEventListener('resize', () => {
 });
 
 // ----- Animation Loop -----
-// Rotate the arm by rotating the pivot, so the model rotates around its center.
 function animate() {
   requestAnimationFrame(animate);
   
