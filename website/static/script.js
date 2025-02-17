@@ -233,7 +233,7 @@ function animate() {
   requestAnimationFrame(animate);
   
   if (autoRotate && armPivot) {
-    armPivot.rotation.y += 0.005; // Adjust rotation speed as needed
+    armPivot.rotation.y += 0.003; // Adjust rotation speed as needed
   }
   
   controls.update();
