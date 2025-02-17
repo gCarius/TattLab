@@ -72,16 +72,18 @@ let armModel = null;
 let uploadedTattooImage = null; // The image uploaded by the user to be used as tattoo.
 let placingTattoo = false;      // Flag for placement mode
 let sizeValue = 1;
+let model = "static/arm_theone.glb";
 
 // ----- Load the Arm Model -----
 // (Using the GLB from the UV tattoo processing version)
 const loader = new GLTFLoader();
 loader.load(
-  'static/armflex.glb',
+  model,
   (gltf) => {
     armModel = gltf.scene;
-    armModel.scale.set(0.7, 0.7, 0.7);
+    armModel.scale.set(1, 1, 1);
     armModel.position.set(0, 0, 0);
+    armModel.rotation.set(0, 5, 0);
     scene.add(armModel);
 
     // Use the canvas texture for every mesh in the model.
