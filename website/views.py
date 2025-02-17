@@ -1,6 +1,5 @@
-from flask import Blueprint, render_template, request, send_file
-import os
-#from rembg import remove 
+from flask import Blueprint, render_template, request, Response
+import os, datetime, pyautogui
 #from PIL import Image
 
 
@@ -30,28 +29,19 @@ def upload_file():
     
     return "File uploaded successfully"
 
+@view.route('/take_screenshot', methods=['POST'])
+def take_screenshot():
+    try:
+        # Get user's Downloads folder
+        downloads_folder = os.path.join(os.path.expanduser("~"), "Downloads")
 
-@view.route("/remove-bg", methods=["POST"])
-def remove_background():
-    if "image" not in request.files:
-        return "No file part", 400
-    
-    file = request.files["image"]
-    
-    if file.filename == "":
-        return "No selected file", 400
-    
-    # output_file = remove(file)
-    # file_path = os.path.join("website/uploads", file.filename)
-    # output_file.save(file_path)
+        # Save the screenshot in the Downloads folder
+        timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        screenshot_path = os.path.join(downloads_folder, f"screenshot_{timestamp}.png")
+        screenshot = pyautogui.screenshot()
+        screenshot.save(screenshot_path)
 
-    # Open image and process it
-    #input_image = Image.open(file).convert("RGBA")
-    #output_image = remove(input_image)
-
-    # Save to processed folder
-    processed_path = os.path.join("website/processed", file.filename)
-    #output_image.save(processed_path, format="PNG")
-
-    # Return processed image
-    return send_file(processed_path, mimetype="image/png")
+        return Response("true", status=200)
+    except Exception as e:
+        print(f"Error: {e}")  # Log error for debugging
+        return Response("false", status=500)

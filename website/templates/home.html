@@ -1,5 +1,5 @@
 {% extends "index.html" %}
-{% block title%}3D Arm Tattoo{% endblock %}
+{% block title%}TattLab{% endblock %}
 {% block content %}
 <div
   class="d-flex justify-content-center align-items-center"
@@ -34,8 +34,8 @@
     display: flex;
   }
   .button-container {
-  position: relative; /* So the label can be absolutely positioned relative to this container */
-  text-align: center;
+    position: relative; /* So the label can be absolutely positioned relative to this container */
+    text-align: center;
   }
 
   /* Button hover effect */
@@ -119,55 +119,54 @@
     line-height: 1;
     display: block;
   }
-
 </style>
 
-<div class="position-fixed button-container" style="bottom:50px; left:50px;">
+<div class="position-fixed button-container" style="bottom: 50px; left: 50px">
   <button
     type="button"
     class="btn rounded-circle border border-black border-5 d-flex justify-content-center align-items-center mb-2 btn-effect"
-    style="width:75px; height:75px; background: transparent;"
+    style="width: 75px; height: 75px; background: transparent"
     data-bs-toggle="modal"
     data-bs-target="#uploadModal"
   >
-    <i class="bi bi-plus" style="font-size:60px; color:black;"></i>
+    <i class="bi bi-plus" style="font-size: 60px; color: black"></i>
   </button>
   <div class="btn-label">Upload</div>
 </div>
 
-<div class="position-fixed button-container" style="bottom:290px; right:50px;">
+<div class="position-fixed button-container" style="bottom: 290px; right: 50px">
   <button
     type="button"
     id="rotate-btn"
     class="btn rounded-circle border border-black border-5 d-flex justify-content-center align-items-center mb-2 btn-effect"
-    style="width:75px; height:75px; background: transparent;"
+    style="width: 75px; height: 75px; background: transparent"
   >
-    <i class="bi bi-arrow-repeat" style="font-size:40px; color:black;"></i>
+    <i class="bi bi-arrow-repeat" style="font-size: 40px; color: black"></i>
   </button>
   <div class="btn-label">Spin</div>
 </div>
 
-<div class="position-fixed button-container" style="bottom:170px; right:50px;">
+<div class="position-fixed button-container" style="bottom: 170px; right: 50px">
   <button
     type="button"
     id="download-btn"
     class="btn rounded-circle border border-black border-5 d-flex justify-content-center align-items-center mb-2 btn-effect"
-    style="width:75px; height:75px; background: transparent;"
+    style="width: 75px; height: 75px; background: transparent"
     onclick="takeScreenshot()"
   >
-    <i class="bi bi-download" style="font-size:40px; color:black;"></i>
+    <i class="bi bi-download" style="font-size: 40px; color: black"></i>
   </button>
   <div class="btn-label">Download</div>
 </div>
 
-<div class="position-fixed button-container" style="bottom:50px; right:50px;">
+<div class="position-fixed button-container" style="bottom: 50px; right: 50px">
   <button
     type="button"
     id="reset-btn"
     class="btn rounded-circle border border-black border-5 d-flex justify-content-center align-items-center mb-2 btn-effect"
-    style="width:75px; height:75px; background: transparent;"
+    style="width: 75px; height: 75px; background: transparent"
   >
-    <i class="bi bi-eraser" style="font-size:40px; color:black;"></i>
+    <i class="bi bi-eraser" style="font-size: 40px; color: black"></i>
   </button>
   <div class="btn-label">Reset</div>
 </div>
@@ -207,11 +206,20 @@
           <div class="container">
             <label for="slider" class="form-label">Select a value:</label>
             <div class="d-flex align-items-center">
-                <span class="me-2">Small</span>
-                <input id="size" type="range" class="form-range flex-grow-1" id="slider" min="0.25" max="2.5" step="0.01" value="1">
-                <span class="ms-2">Large</span>
+              <span class="me-2">Small</span>
+              <input
+                id="size"
+                type="range"
+                class="form-range flex-grow-1"
+                id="slider"
+                min="0.25"
+                max="2.5"
+                step="0.01"
+                value="1"
+              />
+              <span class="ms-2">Large</span>
             </div>
-        </div>
+          </div>
         </div>
 
         <div class="modal-footer d-flex justify-content-between">
@@ -229,7 +237,7 @@
             id="save-btn"
             data-bs-dismiss="modal"
           >
-            Save
+            Continue
           </button>
         </div>
       </div>
@@ -272,9 +280,6 @@
         alert("No file selected!");
       }
     }
-  </script>
-
-  <script>
     document.getElementById("save-btn").addEventListener("click", function () {
       let fileInput = document.getElementById("upload");
       let file = fileInput.files[0];
@@ -293,6 +298,23 @@
         alert("No file selected!");
       }
     });
+    function takeScreenshot() {
+    fetch('/take_screenshot', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.text()) // Read plain text response
+    .then(data => {
+        if (data === "true") {
+            console.log("Screenshot saved successfully!");
+        } else {
+            console.error("Failed to save screenshot.");
+        }
+    })
+    .catch(error => console.error("Error:", error));
+}
   </script>
 {% endblock %}
 </div>

@@ -1,6 +1,6 @@
-import * as THREE from 'three';
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import * as THREE from "three";
+import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 
 // ----- Renderer, Scene & Camera -----
 const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
@@ -25,7 +25,7 @@ controls.target.set(0, 0, 0);
 controls.update();
 
 // Listen for user interaction with OrbitControls and stop auto-rotation
-controls.addEventListener('start', () => {
+controls.addEventListener("start", () => {
   autoRotate = false;
 });
 
@@ -57,11 +57,11 @@ scene.add(backLight.target);
 scene.add(new THREE.AmbientLight(0xffffff));
 
 // ----- Canvas Texture Setup -----
-let baseCanvas = document.createElement('canvas');
+let baseCanvas = document.createElement("canvas");
 baseCanvas.width = 1024;
 baseCanvas.height = 1024;
-let baseCtx = baseCanvas.getContext('2d');
-baseCtx.fillStyle = '#ffffff';
+let baseCtx = baseCanvas.getContext("2d");
+baseCtx.fillStyle = "#ffffff";
 baseCtx.fillRect(0, 0, baseCanvas.width, baseCanvas.height);
 
 const canvasTexture = new THREE.CanvasTexture(baseCanvas);
@@ -69,9 +69,9 @@ canvasTexture.needsUpdate = true;
 
 // ----- Global Variables -----
 let armModel = null;
-let armPivot = null;  // Pivot for centered rotation
+let armPivot = null; // Pivot for centered rotation
 let uploadedTattooImage = null; // The image uploaded by the user to be used as tattoo.
-let placingTattoo = false;      // Flag for placement mode
+let placingTattoo = false; // Flag for placement mode
 let sizeValue = 1;
 let model = "static/arm_theone.glb";
 
@@ -87,12 +87,12 @@ loader.load(
     armModel.scale.set(1, 1, 1);
     armModel.position.set(0, 0, 0);
     armModel.rotation.set(0, 5, 0);
-    
+
     // Compute the bounding box and center of the arm model
     const box = new THREE.Box3().setFromObject(armModel);
     const center = new THREE.Vector3();
     box.getCenter(center);
-    
+
     // Create a pivot at the computed center.
     // Shift the arm model so that its center becomes (0,0,0) relative to the pivot.
     armModel.position.sub(center);
@@ -107,7 +107,7 @@ loader.load(
         child.material = new THREE.MeshPhongMaterial({
           map: canvasTexture,
           transparent: true,
-          color: 0xffcba3
+          color: 0xffcba3,
         });
         child.castShadow = true;
         child.receiveShadow = true;
@@ -120,7 +120,7 @@ loader.load(
   },
   undefined,
   (error) => {
-    console.error('Error loading model:', error);
+    console.error("Error loading model:", error);
   }
 );
 
@@ -133,7 +133,7 @@ function shoot(uv) {
   const x = uv.x * baseCanvas.width;
   const y = (1 - uv.y) * baseCanvas.height;
   if (!uploadedTattooImage) {
-    console.error('No tattoo image available.');
+    console.error("No tattoo image available.");
     return;
   }
   const tattooWidth = 100 * sizeValue;
@@ -146,22 +146,22 @@ function shoot(uv) {
     tattooHeight
   );
   canvasTexture.needsUpdate = true;
-  console.log('Tattoo painted at UV:', uv);
+  console.log("Tattoo painted at UV:", uv);
 }
 
 // ----- Event: Upload Tattoo Image -----
-document.getElementById('upload').addEventListener('change', (event) => {
+document.getElementById("upload").addEventListener("change", (event) => {
   const file = event.target.files[0];
   if (file) {
-    const reader = new FileReader();    
+    const reader = new FileReader();
     reader.onload = function (e) {
       const img = new Image();
       img.onload = () => {
         uploadedTattooImage = img;
-        console.log('Tattoo image loaded successfully.');
+        console.log("Tattoo image loaded successfully.");
       };
       img.onerror = (err) => {
-        console.error('Error loading tattoo image:', err);
+        console.error("Error loading tattoo image:", err);
       };
       img.src = e.target.result;
     };
@@ -172,23 +172,25 @@ document.getElementById('upload').addEventListener('change', (event) => {
 // ----- Event: Enable Placement Mode -----
 document.getElementById("save-btn").addEventListener("click", function () {
   if (!uploadedTattooImage) {
-    console.error('Please upload a tattoo image first.');
+    console.error("Please upload a tattoo image first.");
     return;
   }
   setTimeout(() => {
     placingTattoo = true;
-    document.body.style.cursor = "crosshair"; 
-    console.log('Tattoo placement enabled. Double click on the model to place the tattoo.');
+    document.body.style.cursor = "crosshair";
+    console.log(
+      "Tattoo placement enabled. Double click on the model to place the tattoo."
+    );
   }, 500);
 });
 
 // ----- Event: Place Tattoo on Double Click -----
-document.addEventListener('dblclick', (event) => {
+document.addEventListener("dblclick", (event) => {
   if (!placingTattoo || !armModel) return;
-  
+
   mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
   mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-  
+
   raycaster.setFromCamera(mouse, camera);
   const intersects = raycaster.intersectObject(armModel, true);
   if (intersects.length > 0) {
@@ -196,10 +198,10 @@ document.addEventListener('dblclick', (event) => {
     if (intersect.uv) {
       shoot(intersect.uv);
     } else {
-      console.warn('No UV data found on the intersected face.');
+      console.warn("No UV data found on the intersected face.");
     }
     placingTattoo = false;
-    document.body.style.cursor = "default"; 
+    document.body.style.cursor = "default";
   }
 });
 
@@ -216,7 +218,7 @@ document.getElementById("rotate-btn").addEventListener("click", () => {
 });
 
 // ----- Handle Window Resize -----
-window.addEventListener('resize', () => {
+window.addEventListener("resize", () => {
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(window.innerWidth, window.innerHeight);
@@ -225,17 +227,17 @@ window.addEventListener('resize', () => {
 // ----- Animation Loop -----
 function animate() {
   requestAnimationFrame(animate);
-  
+
   if (autoRotate && armPivot) {
     armPivot.rotation.y += 0.002; // Slower rotation speed
   }
-  
+
   controls.update();
   renderer.render(scene, camera);
 }
 animate();
 
-document.getElementById("reset-btn").addEventListener("click", function() {
+document.getElementById("reset-btn").addEventListener("click", function () {
   baseCtx.clearRect(0, 0, baseCanvas.width, baseCanvas.height);
   baseCtx.fillStyle = "#ffffff";
   baseCtx.fillRect(0, 0, baseCanvas.width, baseCanvas.height);
@@ -243,20 +245,3 @@ document.getElementById("reset-btn").addEventListener("click", function() {
   console.log("Canvas reset!");
 });
 
-window.takeScreenshot = function () {
-  // Force render before capturing
-  renderer.render(scene, camera); 
-  if (!armModel) {
-    console.error("Model is not fully loaded yet.");
-    return;
-  }
-  // Delay to ensure render updates
-  setTimeout(() => {
-    const imgData = renderer.domElement.toDataURL("image/png");
-
-    const link = document.createElement("a");
-    link.href = imgData;
-    link.download = "screenshot.png";
-    link.click();
-  }, 100); // Small delay to ensure rendering updates
-}
