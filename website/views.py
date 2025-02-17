@@ -32,13 +32,23 @@ def upload_file():
 @view.route('/take_screenshot', methods=['POST'])
 def take_screenshot():
     try:
+        # Get viewport size from the request
+        data = request.json
+        x = data.get("x", 0)
+        y = data.get("y", 0)
+        width = data.get("width", 1920)  # Defaults if not provided
+        height = data.get("height", 1080)
+
         # Get user's Downloads folder
         downloads_folder = os.path.join(os.path.expanduser("~"), "Downloads")
 
-        # Save the screenshot in the Downloads folder
+        # Generate a timestamped filename
         timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-        screenshot_path = os.path.join(downloads_folder, f"screenshot_{timestamp}.png")
-        screenshot = pyautogui.screenshot()
+        screenshot_filename = f"screenshot_{timestamp}.png"
+        screenshot_path = os.path.join(downloads_folder, screenshot_filename)
+
+        # Capture screenshot of the specified region
+        screenshot = pyautogui.screenshot(region=(x, y, width, height))
         screenshot.save(screenshot_path)
 
         return Response("true", status=200)
