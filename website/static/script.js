@@ -242,3 +242,21 @@ document.getElementById("reset-btn").addEventListener("click", function() {
   canvasTexture.needsUpdate = true;
   console.log("Canvas reset!");
 });
+
+window.takeScreenshot = function () {
+  // Force render before capturing
+  renderer.render(scene, camera); 
+  if (!armModel) {
+    console.error("Model is not fully loaded yet.");
+    return;
+  }
+  // Delay to ensure render updates
+  setTimeout(() => {
+    const imgData = renderer.domElement.toDataURL("image/png");
+
+    const link = document.createElement("a");
+    link.href = imgData;
+    link.download = "screenshot.png";
+    link.click();
+  }, 100); // Small delay to ensure rendering updates
+}
