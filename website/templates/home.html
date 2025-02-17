@@ -129,11 +129,23 @@ content %}
   <div class="btn-label">Upload</div>
 </div>
 
+<div class="position-fixed button-container" style="bottom:170px; right:50px;">
+  <button
+    type="button"
+    id="download-btn"
+    class="btn rounded-circle border border-black border-5 d-flex justify-content-center align-items-center mb-2 btn-effect"
+    style="width:75px; height:75px; background: transparent;"
+    onclick="takeScreenshot()"
+  >
+    <i class="bi bi-download" style="font-size:40px; color:black;"></i>
+  </button>
+  <div class="btn-label">Download</div>
+</div>
 <div class="position-fixed button-container" style="bottom:50px; right:50px;">
   <button
     type="button"
     id="reset-btn"
-    class="btn rounded-circle border border-black border-5 d-flex justify-content-center align-items-center btn-effect"
+    class="btn rounded-circle border border-black border-5 d-flex justify-content-center align-items-center mb-2 btn-effect"
     style="width:75px; height:75px; background: transparent;"
   >
     <i class="bi bi-eraser" style="font-size:40px; color:black;"></i>
