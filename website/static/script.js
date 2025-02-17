@@ -24,6 +24,7 @@ controls.enableZoom = true;
 controls.target.set(0, 0, 0);
 controls.update();
 
+// ----- Lights -----
 // Top Light (shines downward)
 const topLight = new THREE.DirectionalLight(0xffffff, 1);
 topLight.position.set(0, 10, 0);
@@ -69,13 +70,16 @@ canvasTexture.needsUpdate = true;
 
 // ----- Global Variables -----
 let armModel = null;
+let armPivot = null;  // NEW: Pivot for centered rotation
 let uploadedTattooImage = null; // The image uploaded by the user to be used as tattoo.
 let placingTattoo = false;      // Flag for placement mode
 let sizeValue = 1;
 let model = "static/arm_theone.glb";
 
+// NEW: Global autoRotate flag
+let autoRotate = true;
+
 // ----- Load the Arm Model -----
-// (Using the GLB from the UV tattoo processing version)
 const loader = new GLTFLoader();
 loader.load(
   model,
@@ -84,7 +88,19 @@ loader.load(
     armModel.scale.set(1, 1, 1);
     armModel.position.set(0, 0, 0);
     armModel.rotation.set(0, 5, 0);
-    scene.add(armModel);
+    
+    // Compute the bounding box and center of the arm model
+    const box = new THREE.Box3().setFromObject(armModel);
+    const center = new THREE.Vector3();
+    box.getCenter(center);
+    
+    // Create a pivot at the computed center.
+    // Shift the arm model so that its center becomes (0,0,0) relative to the pivot.
+    armModel.position.sub(center);
+    armPivot = new THREE.Object3D();
+    armPivot.position.copy(center);
+    armPivot.add(armModel);
+    scene.add(armPivot);
 
     // Use the canvas texture for every mesh in the model.
     armModel.traverse((child) => {
@@ -92,19 +108,14 @@ loader.load(
         child.material = new THREE.MeshPhongMaterial({
           map: canvasTexture,
           transparent: true,
-          color: 0xffcba3 // No quotes around the hex value
+          color: 0xffcba3
         });
-        
         child.castShadow = true;
         child.receiveShadow = true;
-
       }
     });
 
-    // Update OrbitControls target based on model’s bounding box.
-    const box = new THREE.Box3().setFromObject(armModel);
-    const center = new THREE.Vector3();
-    box.getCenter(center);
+    // Set OrbitControls target to the computed center.
     controls.target.copy(center);
     controls.update();
   },
@@ -119,19 +130,16 @@ const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
 
 // ----- Tattoo Painting Function -----
-// Given the UV coordinates from a raycast, convert to canvas coordinates and paint the tattoo.
 function shoot(uv) {
   // Convert UV (0 to 1) to canvas pixel coordinates.
   const x = uv.x * baseCanvas.width;
   const y = (1 - uv.y) * baseCanvas.height; // Flip Y because canvas origin is top-left
 
-  // Use the uploaded image as the tattoo.
   if (!uploadedTattooImage) {
     console.error('No tattoo image available.');
     return;
   }
   
-  // Determine tattoo size in pixels.
   const tattooWidth = 100 * sizeValue;
   const tattooHeight = 100 * sizeValue;
   
@@ -144,19 +152,16 @@ function shoot(uv) {
     tattooHeight
   );
   
-  // Notify the canvas texture to update.
   canvasTexture.needsUpdate = true;
   console.log('Tattoo painted at UV:', uv);
 }
 
 // ----- Event: Upload Tattoo Image -----
-// Listen to changes on the file input to load the image dynamically.
 document.getElementById('upload').addEventListener('change', (event) => {
   const file = event.target.files[0];
   if (file) {
     const reader = new FileReader();    
     reader.onload = function (e) {
-      // Create a new image using the loaded data URL.
       const img = new Image();
       img.onload = () => {
         uploadedTattooImage = img;
@@ -172,7 +177,6 @@ document.getElementById('upload').addEventListener('change', (event) => {
 });
 
 // ----- Event: Enable Placement Mode -----
-// When the user clicks the "save" button, allow one tattoo placement (after a slight delay).
 document.getElementById("save-btn").addEventListener("click", function () {
   if (!uploadedTattooImage) {
     console.error('Please upload a tattoo image first.');
@@ -186,15 +190,12 @@ document.getElementById("save-btn").addEventListener("click", function () {
 });
 
 // ----- Event: Place Tattoo on Double Click -----
-// Only act if we’re in placement mode.
 document.addEventListener('dblclick', (event) => {
   if (!placingTattoo || !armModel) return;
   
-  // Convert mouse coordinates to normalized device coordinates.
   mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
   mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
   
-  // Raycast against the arm model.
   raycaster.setFromCamera(mouse, camera);
   const intersects = raycaster.intersectObject(armModel, true);
   if (intersects.length > 0) {
@@ -204,10 +205,8 @@ document.addEventListener('dblclick', (event) => {
     } else {
       console.warn('No UV data found on the intersected face.');
     }
-    // Disable placement mode after one tattoo is placed.
     placingTattoo = false;
     document.body.style.cursor = "default"; 
-
   }
 });
 
@@ -216,6 +215,10 @@ document.getElementById("save-btn").addEventListener("click", function () {
   console.log("Selected size:", sizeValue);
 });
 
+// ----- Stop auto-rotation on user interaction -----
+document.addEventListener('mousedown', () => {
+  autoRotate = false;
+});
 
 // ----- Handle Window Resize -----
 window.addEventListener('resize', () => {
@@ -225,22 +228,23 @@ window.addEventListener('resize', () => {
 });
 
 // ----- Animation Loop -----
+// Rotate the arm by rotating the pivot, so the model rotates around its center.
 function animate() {
   requestAnimationFrame(animate);
+  
+  if (autoRotate && armPivot) {
+    armPivot.rotation.y += 0.005; // Adjust rotation speed as needed
+  }
+  
   controls.update();
   renderer.render(scene, camera);
 }
 animate();
 
 document.getElementById("reset-btn").addEventListener("click", function() {
-  // Clear the canvas
   baseCtx.clearRect(0, 0, baseCanvas.width, baseCanvas.height);
-  // Fill it with a white background (or whatever the default is)
   baseCtx.fillStyle = "#ffffff";
   baseCtx.fillRect(0, 0, baseCanvas.width, baseCanvas.height);
-  
-  // Notify the texture that it needs updating
   canvasTexture.needsUpdate = true;
-  
   console.log("Canvas reset!");
 });
