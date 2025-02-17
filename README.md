@@ -13,3 +13,5 @@ The command to run the app locally is either one of the following from the root 
 make run    
 python3 app.py
 ```
+### Technical Detail:
+For the screenshot functionality user must give acesss
