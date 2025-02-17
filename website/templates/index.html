@@ -5,6 +5,16 @@
       head {
         font-family: "Pirata One", serif;
       }
+      .visualizer-text {
+        font-family: "Pirata One", serif;
+        font-size: 24px;  /* adjust size as needed */
+        color: #555;      /* choose a sleek color, like a soft gray */
+        opacity: 0.7;
+        letter-spacing: 1px;
+        margin-bottom: 0;
+        margin-top: 80px;
+      }
+      
     </style>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -27,9 +37,6 @@
       }
       .fs-custom {
         font-size: 70px;
-        position: fixed;
-        top: 20px;
-        left: 50px;
       }
       .bg-radial-gradient {
         background: radial-gradient(circle, #a9a9a9, #ffffff);
@@ -49,10 +56,16 @@
       crossorigin="anonymous"
     ></script>
 
-    
-
-    <div class="fixed-top fs-custom">TattLab
+    <div class="fixed-top title-container" style="top:20px; left:50px; pointer-events: none;">
+      <div class="fs-custom">TattLab</div>
+      <div class="visualizer-text">
+        1: Upload your tattoo (+).<br>
+        2: Adjust Size.<br>
+        3: Reset arm (eraser).<br>
+        4: Download your arm!
+      </div>
     </div>
+    
 
     <div>{% block content %} {% endblock %}</div>
   </body>
