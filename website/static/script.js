@@ -107,7 +107,7 @@ loader.load(
         child.material = new THREE.MeshPhongMaterial({
           map: canvasTexture,
           transparent: true,
-          color: 0xffcba3,
+          color: 0xc68642,  // skin color
         });
         child.castShadow = true;
         child.receiveShadow = true;
