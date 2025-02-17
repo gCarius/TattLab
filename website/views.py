@@ -44,7 +44,7 @@ def take_screenshot():
 
         # Generate a timestamped filename
         timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-        screenshot_filename = f"screenshot_{timestamp}.png"
+        screenshot_filename = f"myTattoo_{timestamp}.png"
         screenshot_path = os.path.join(downloads_folder, screenshot_filename)
 
         # Capture screenshot of the specified region

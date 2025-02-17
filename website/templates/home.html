@@ -118,7 +118,38 @@ content %}
     line-height: 1;
     display: block;
   }
+
+  @keyframes fadeOut {
+    0% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+
+  .fade-out {
+    animation: fadeOut 1s forwards;
+  }
 </style>
+
+<div
+  id="success-popup"
+  style="
+    display: none;
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 20px;
+    background-color: rgba(0, 128, 0, 0.8);
+    color: white;
+    border-radius: 5px;
+    font-size: 16px;
+  "
+>
+  Screenshot saved successfully!
+</div>
 
 <div class="position-fixed button-container" style="bottom: 50px; left: 50px">
   <button
@@ -318,12 +349,33 @@ content %}
         .then((response) => response.text()) // Read plain text response
         .then((data) => {
           if (data === "true") {
+            showSuccessPopup();
             console.log("Screenshot saved successfully!");
           } else {
             console.error("Failed to save screenshot.");
           }
         })
         .catch((error) => console.error("Error:", error));
+    }
+    function showSuccessPopup() {
+      const popup = document.getElementById("success-popup");
+
+      // Reset the popup's display and fade class
+      popup.style.display = "block";
+      popup.classList.remove("fade-out");
+
+      // Force reflow to restart animation
+      void popup.offsetWidth; // Forces the reflow so animation can restart
+
+      // Hold the popup for 2 seconds before starting the fade-out
+      setTimeout(() => {
+        popup.classList.add("fade-out"); // Add the fade-out animation class
+      }, 2000); // Hold for 2 seconds
+
+      // Hide the popup after the fade-out animation completes
+      setTimeout(() => {
+        popup.style.display = "none"; // Hide after fade-out completes
+      }, 4000); // Total duration = 2 seconds hold + 2 seconds fade-out
     }
   </script>
   {% endblock %}
