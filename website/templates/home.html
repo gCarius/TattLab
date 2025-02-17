@@ -114,6 +114,13 @@ content %}
   .preview-container img:not([src=""]) + .preview-placeholder {
     display: none;
   }
+  #rotate-btn i {
+    margin: 0;
+    padding: 0;
+    line-height: 1;
+    display: block;
+  }
+
 </style>
 
 <div class="position-fixed button-container" style="bottom:50px; left:50px;">
@@ -129,6 +136,18 @@ content %}
   <div class="btn-label">Upload</div>
 </div>
 
+<div class="position-fixed button-container" style="bottom:290px; right:50px;">
+  <button
+    type="button"
+    id="rotate-btn"
+    class="btn rounded-circle border border-black border-5 d-flex justify-content-center align-items-center mb-2 btn-effect"
+    style="width:75px; height:75px; background: transparent;"
+  >
+    <i class="bi bi-arrow-repeat" style="font-size:40px; color:black;"></i>
+  </button>
+  <div class="btn-label">Spin</div>
+</div>
+
 <div class="position-fixed button-container" style="bottom:170px; right:50px;">
   <button
     type="button"
@@ -141,6 +160,7 @@ content %}
   </button>
   <div class="btn-label">Download</div>
 </div>
+
 <div class="position-fixed button-container" style="bottom:50px; right:50px;">
   <button
     type="button"

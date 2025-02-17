@@ -24,6 +24,11 @@ controls.enableZoom = true;
 controls.target.set(0, 0, 0);
 controls.update();
 
+// Listen for user interaction with OrbitControls and stop auto-rotation
+controls.addEventListener('start', () => {
+  autoRotate = false;
+});
+
 // ----- Lights -----
 // Top Light (shines downward)
 const topLight = new THREE.DirectionalLight(0xffffff, 1);
@@ -70,13 +75,13 @@ canvasTexture.needsUpdate = true;
 
 // ----- Global Variables -----
 let armModel = null;
-let armPivot = null;  // NEW: Pivot for centered rotation
+let armPivot = null;  // Pivot for centered rotation
 let uploadedTattooImage = null; // The image uploaded by the user to be used as tattoo.
 let placingTattoo = false;      // Flag for placement mode
 let sizeValue = 1;
 let model = "static/arm_theone.glb";
 
-// NEW: Global autoRotate flag
+// Global autoRotate flag
 let autoRotate = true;
 
 // ----- Load the Arm Model -----
@@ -215,8 +220,8 @@ document.getElementById("save-btn").addEventListener("click", function () {
   console.log("Selected size:", sizeValue);
 });
 
-// ----- Stop auto-rotation on user interaction -----
-document.addEventListener('mousedown', () => {
+// ----- Stop auto-rotation on user interaction via OrbitControls -----
+controls.addEventListener('start', () => {
   autoRotate = false;
 });
 
@@ -233,7 +238,7 @@ function animate() {
   requestAnimationFrame(animate);
   
   if (autoRotate && armPivot) {
-    armPivot.rotation.y += 0.003; // Adjust rotation speed as needed
+    armPivot.rotation.y += 0.002; // Slower rotation speed
   }
   
   controls.update();
